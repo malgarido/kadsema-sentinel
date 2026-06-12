@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KADSEMA SENTINEL</title>
+  <script>
+    // GitHub Pages SPA routing workaround.
+    // Encodes the full path as a query param and redirects to the root,
+    // where index.html reads it back and restores the URL via history.replaceState.
+    (function () {
+      var base  = '/';
+      // Detect project-page base (e.g. /kadsema-sentinel/)
+      var segs  = window.location.pathname.split('/');
+      if (segs.length > 1 && segs[1]) base = '/' + segs[1] + '/';
+
+      var path   = window.location.pathname.slice(base.length - 1) || '/';
+      var search = window.location.search;
+      var hash   = window.location.hash;
+      var target = base + '?p=' + encodeURIComponent(path + search) + hash;
+      window.location.replace(target);
+    }());
+  </script>
+</head>
+<body></body>
+</html>

@@ -1,0 +1,46 @@
+name: Deploy to Netlify
+
+# Production deploy to Netlify. Use this when running the LIVE
+# (Supabase) build. Add these as repository secrets first:
+#   NETLIFY_AUTH_TOKEN   — Netlify user/personal access token
+#   NETLIFY_SITE_ID      — target site API ID
+#   VITE_SUPABASE_URL    — your Supabase project URL
+#   VITE_SUPABASE_ANON_KEY
+# (Set VITE_DATA_MODE=supabase below to ship the live client.)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_DATA_MODE: ${{ vars.VITE_DATA_MODE || 'local' }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: dist
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy ${{ github.sha }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 5

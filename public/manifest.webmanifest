@@ -1,0 +1,35 @@
+{
+  "name": "KADSEMA SENTINEL",
+  "short_name": "SENTINEL",
+  "description": "Multi-hazard Early Warning & Emergency Operations Platform for Kaduna State.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#16140f",
+  "theme_color": "#e8b23a",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Incident Board",
+      "short_name": "Incidents",
+      "description": "Open the active incident board",
+      "url": "./?view=incidents"
+    },
+    {
+      "name": "Early Warning Console",
+      "short_name": "Early Warning",
+      "description": "Open the early warning console",
+      "url": "./?view=earlywarning"
+    }
+  ]
+}

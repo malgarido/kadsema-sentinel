@@ -1,0 +1,26 @@
+{
+  "name": "kadsema-sentinel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KADSEMA SENTINEL — Multi-hazard early-warning & emergency operations platform for the Kaduna State Emergency Management Agency.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:pages": "vite build --base ./",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
