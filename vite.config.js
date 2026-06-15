@@ -14,5 +14,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    // store.supabase.js uses top-level await; requires ES2022+
+    target: "es2022",
   },
 });
