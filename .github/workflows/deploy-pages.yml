@@ -25,27 +25,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build:pages
         env:
           VITE_DATA_MODE: local
-          # Vite needs the correct base path for project Pages
-          # (https://<user>.github.io/<repo>/). Set REPO_NAME below
-          # or hard-code base in vite.config.js.
-          BASE_PATH: ./
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: dist
 
