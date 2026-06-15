@@ -46,7 +46,7 @@ create or replace function notify_dispatch_alert() returns trigger
 language plpgsql security definer as $$
 begin
   perform net.http_post(
-    url     := 'https://<PROJECT_REF>.functions.supabase.co/dispatch-alert',
+    url     := 'https://bfqwdvbcsnrvczulvriw.functions.supabase.co/dispatch-alert',
     headers := jsonb_build_object(
                  'Content-Type', 'application/json',
                  'Authorization', 'Bearer ' || current_setting('app.service_role_key', true)
