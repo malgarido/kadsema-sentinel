@@ -13,11 +13,9 @@ const NAV = [
 ];
 
 function Clock() {
-  const [t, setT] = useState(KAD.NOW);
+  const [t, setT] = useState(new Date());
   useEffect(() => {
-    // run a "live" clock seeded from the demo NOW
-    const base = Date.now();
-    const id = setInterval(() => setT(new Date(KAD.NOW.getTime() + (Date.now() - base))), 1000);
+    const id = setInterval(() => setT(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
   return (
