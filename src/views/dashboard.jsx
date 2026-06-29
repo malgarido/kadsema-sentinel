@@ -91,7 +91,9 @@ function Dashboard({ onOpenIncident, goTo, query }) {
           pad={false} className="dash-feed">
           <div className="inc-feed">
             {feed.length === 0
-              ? <div style={{ padding: "28px 14px", textAlign: "center", color: "var(--text-mute)", fontFamily: "var(--mono)", fontSize: 12 }}>No incidents match "{query}"</div>
+              ? <div style={{ padding: "28px 14px", textAlign: "center", color: "var(--text-mute)", fontFamily: "var(--mono)", fontSize: 12 }}>
+                  {q ? `No incidents match "${query}"` : "No active incidents"}
+                </div>
               : feed.map((inc) => <IncidentRow key={inc.id} inc={inc} onOpen={onOpenIncident} />)}
           </div>
         </Panel>
