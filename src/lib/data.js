@@ -163,13 +163,13 @@
   /* ============================================================
      INCIDENTS
      ============================================================ */
-  const NOW = new Date("2026-06-11T13:42:00");
-  function mins(m) { return new Date(NOW.getTime() - m * 60000); }
+  const NOW = new Date();
+  function mins(m) { return new Date(Date.now() - m * 60000); }
   function fmtTime(d) {
     return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   }
   function ago(d) {
-    const m = Math.round((NOW - d) / 60000);
+    const m = Math.round((Date.now() - d) / 60000);
     if (m < 1) return "just now";
     if (m < 60) return m + "m ago";
     const h = Math.floor(m / 60);

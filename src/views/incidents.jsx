@@ -2,6 +2,7 @@
    KADSEMA SENTINEL — Incident Management (board + filters)
    ============================================================ */
 const { useState: useStateInc } = React;
+const INC_TYPE_FILTERS = ["All", "Flood", "Fire", "Conflict", "Epidemic", "Building Collapse", "RTA"];
 
 function IncCard({ inc, onOpen }) {
   const col = inc.sev === 3 ? "var(--red)" : inc.sev === 2 ? "var(--orange)" : "var(--gold)";
@@ -25,16 +26,23 @@ function IncCard({ inc, onOpen }) {
   );
 }
 
-function IncidentsView({ onOpen, onLog }) {
+function IncidentsView({ onOpen, onLog, query }) {
   SentinelStore.useStore();
   const [zone, setZone] = useStateInc("All");
   const [sev, setSev] = useStateInc(0);
+  const [typeFilter, setTypeFilter] = useStateInc("All");
+  const [showMore, setShowMore] = useStateInc(false);
   const zones = ["All", "Central", "North", "South", "East", "West"];
 
   const allInc = SentinelStore.incidentsView();
   let list = allInc;
   if (zone !== "All") list = list.filter((i) => (KAD.lgaByName[i.lga] || {}).zone === zone);
   if (sev) list = list.filter((i) => i.sev === sev);
+  if (typeFilter !== "All") list = list.filter((i) => i.type === typeFilter);
+  const q = (query || "").trim().toLowerCase();
+  if (q) list = list.filter((i) =>
+    [i.id, i.type, i.lga, i.ward].some((f) => (f || "").toLowerCase().includes(q))
+  );
 
   const cols = KAD.STATUS_FLOW.map((s) => ({ status: s, items: list.filter((i) => i.status === s) }));
   const slaAtRisk = allInc.filter((i) => i.sla === "watch" && i.status !== "Closed").length;
@@ -55,10 +63,22 @@ function IncidentsView({ onOpen, onLog }) {
         </div>
         <div className="inc-toolbar-r">
           {slaAtRisk > 0 && <span className="sla-pill"><Icon name="clock" size={13} />{slaAtRisk} SLA at risk</span>}
-          <button className="btn ghost sm"><Icon name="filter" size={14} />More filters</button>
+          <button className={"btn sm " + (showMore ? "primary" : "ghost")} onClick={() => setShowMore((v) => !v)}>
+            <Icon name="filter" size={14} />{showMore ? "Hide filters" : "More filters"}
+          </button>
           <button className="btn primary sm" onClick={onLog}><Icon name="plus" size={14} />Log incident</button>
         </div>
       </div>
+      {showMore && (
+        <div className="inc-toolbar" style={{ marginBottom: 0, paddingBottom: 12 }}>
+          <span style={{ fontSize: 11, color: "var(--text-mute)", fontFamily: "var(--mono)", letterSpacing: ".06em", textTransform: "uppercase" }}>Hazard type</span>
+          <div className="seg sm">
+            {INC_TYPE_FILTERS.map((t) => (
+              <button key={t} className={"seg-btn " + (typeFilter === t ? "on" : "")} onClick={() => setTypeFilter(t)}>{t}</button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="board">
         {cols.map((c) => (

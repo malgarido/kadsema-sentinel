@@ -75,7 +75,7 @@
 
   /* ---- audit log ---- */
   function logEntry(action, ref, detail) {
-    return { id: "log" + Date.now() + Math.random().toString(36).slice(2, 5), action, ref, detail, at: KAD.NOW.getTime() };
+    return { id: "log" + Date.now() + Math.random().toString(36).slice(2, 5), action, ref, detail, at: Date.now() };
   }
 
   /* ---- toast ---- */
@@ -103,7 +103,7 @@
     const inc = {
       id, type: d.type, icon: d.icon, lga: d.lga, ward: d.ward || "—",
       sev: d.sev, status: "Reported", channel: d.channel || "EOC Console",
-      reporter: d.reporter || "EOC Operator", at: KAD.NOW.getTime(),
+      reporter: d.reporter || "EOC Operator", at: Date.now(),
       team: "—", desc: d.desc || "Incident logged from EOC console — awaiting validation.",
       coords: d.coords || (lga.center ? (10 + Math.random()).toFixed(4) + ", " + (7 + Math.random()).toFixed(4) : "—"),
       sla: "watch",
@@ -145,7 +145,7 @@
       ch: payload.channels.join(" · "),
       lang: payload.lang,
       lga: payload.lga || "Statewide",
-      at: KAD.NOW.getTime(),
+      at: Date.now(),
       recipients: payload.recipients || "—",
       msg: payload.msg,
     };
@@ -163,7 +163,7 @@
         msg: payload.msg,
         priority: payload.priority || (payload.channels.some((c) => /siren/i.test(c)) ? "Urgent" : "Routine"),
         status: "Queued",
-        at: KAD.NOW.getTime(),
+        at: Date.now(),
         operator: null,
       };
       next.broadcasts = [b, ...(state.broadcasts || [])];

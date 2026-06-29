@@ -27,6 +27,19 @@ function Clock() {
 }
 
 function TopBar({ view, query, setQuery }) {
+  SentinelStore.useStore();
+  const c = SentinelStore.counts();
+  const alertCount = c.level3 + c.reported + c.pendingBroadcast;
+
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const up = () => setOnline(true);
+    const dn = () => setOnline(false);
+    window.addEventListener("online", up);
+    window.addEventListener("offline", dn);
+    return () => { window.removeEventListener("online", up); window.removeEventListener("offline", dn); };
+  }, []);
+
   return (
     <header className="topbar">
       <div className="brand">
@@ -40,17 +53,23 @@ function TopBar({ view, query, setQuery }) {
       <div className="searchbox">
         <Icon name="search" size={16} />
         <input value={query} onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search incidents, LGAs, wards, resources…" />
+          placeholder="Search incidents, LGAs, wards…" />
         <kbd>⌘K</kbd>
       </div>
 
       <div className="topbar-right">
-        <div className="sys-pill ok">
+        <div className={"sys-pill " + (online ? "ok" : "err")}>
           <span className="sys-dot" />
-          <div><b>EOC ONLINE</b><i>All systems nominal</i></div>
+          <div>
+            <b>{online ? "EOC ONLINE" : "OFFLINE"}</b>
+            <i>{online ? "All systems nominal" : "No connection"}</i>
+          </div>
         </div>
         <Clock />
-        <button className="ic-btn" title="Alerts"><Icon name="bell" size={18} /><span className="ic-badge">5</span></button>
+        <button className="ic-btn" title="Alerts">
+          <Icon name="bell" size={18} />
+          {alertCount > 0 && <span className="ic-badge">{alertCount > 99 ? "99+" : alertCount}</span>}
+        </button>
         <div className="user-chip">
           <div className="avatar">SR</div>
           <div className="user-meta"><b>Situation Room</b><i>HQ · Analyst</i></div>
@@ -287,13 +306,13 @@ function App() {
     window.scrollTo(0, 0);
   }
   function refresh() {
-    SentinelStore.toast("Live data feeds refreshed · " + KAD.fmtTime(KAD.NOW), "info");
+    SentinelStore.toast("Live data feeds refreshed · " + KAD.fmtTime(new Date()), "info");
   }
 
   const views = {
-    dash: <Dashboard onOpenIncident={setOpenInc} goTo={goTo} />,
+    dash: <Dashboard onOpenIncident={setOpenInc} goTo={goTo} query={query} />,
     map: window.RiskMapView ? <RiskMapView focus={mapFocus} /> : <Placeholder name="Risk Map" />,
-    incidents: window.IncidentsView ? <IncidentsView onOpen={setOpenInc} onLog={() => setLogOpen(true)} /> : <Placeholder name="Incidents" />,
+    incidents: window.IncidentsView ? <IncidentsView onOpen={setOpenInc} onLog={() => setLogOpen(true)} query={query} /> : <Placeholder name="Incidents" />,
     ews: window.EwsView ? <EwsView /> : <Placeholder name="Early Warning" />,
     broadcast: window.BroadcastView ? <BroadcastView /> : <Placeholder name="Broadcast" />,
     field: window.FieldView ? <FieldView /> : <Placeholder name="Field App" />,

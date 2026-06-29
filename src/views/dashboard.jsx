@@ -40,11 +40,15 @@ function IncidentRow({ inc, onOpen }) {
   );
 }
 
-function Dashboard({ onOpenIncident, goTo }) {
+function Dashboard({ onOpenIncident, goTo, query }) {
   SentinelStore.useStore();
   const all = SentinelStore.incidentsView();
   const active = all.filter((i) => i.status !== "Closed");
   const c = SentinelStore.counts();
+  const q = (query || "").trim().toLowerCase();
+  const feed = q ? active.filter((i) =>
+    [i.id, i.type, i.lga, i.ward].some((f) => (f || "").toLowerCase().includes(q))
+  ) : active;
   return (
     <div className="view dash">
       {/* KPI row */}
@@ -82,11 +86,13 @@ function Dashboard({ onOpenIncident, goTo }) {
         </Panel>
 
         <Panel title="Active incidents" icon="incidents"
-          sub={active.length + " open"}
+          sub={q ? feed.length + " match" + (feed.length !== 1 ? "es" : "") : active.length + " open"}
           action={<button className="link-btn" onClick={() => goTo("incidents")}>Board <Icon name="arrowRight" size={13} /></button>}
           pad={false} className="dash-feed">
           <div className="inc-feed">
-            {active.map((inc) => <IncidentRow key={inc.id} inc={inc} onOpen={onOpenIncident} />)}
+            {feed.length === 0
+              ? <div style={{ padding: "28px 14px", textAlign: "center", color: "var(--text-mute)", fontFamily: "var(--mono)", fontSize: 12 }}>No incidents match "{query}"</div>
+              : feed.map((inc) => <IncidentRow key={inc.id} inc={inc} onOpen={onOpenIncident} />)}
           </div>
         </Panel>
 

@@ -60,11 +60,15 @@ input{font-family:inherit}
 
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px}
 .sys-pill{display:flex;align-items:center;gap:8px;padding:5px 11px 5px 9px;border-radius:7px;
-  background:rgba(84,173,99,.09);border:1px solid rgba(84,173,99,.25)}
+  background:rgba(38,122,58,.09);border:1px solid rgba(38,122,58,.25)}
 .sys-pill .sys-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);
   animation:pulse 2.4s infinite}
 .sys-pill b{font-size:10px;letter-spacing:.1em;color:var(--green);font-family:var(--mono);display:block}
 .sys-pill i{font-size:10px;color:var(--text-mute);font-style:normal}
+.sys-pill.err{background:rgba(198,59,53,.09);border-color:rgba(198,59,53,.25)}
+.sys-pill.err .sys-dot{background:var(--red);box-shadow:0 0 8px var(--red);animation:none}
+.sys-pill.err b{color:var(--red)}
+.sys-pill.err i{color:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
 
 .clock{text-align:right;line-height:1.25}

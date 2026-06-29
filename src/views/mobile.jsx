@@ -23,7 +23,17 @@ function Phone({ label, sub, children, statusColor = "var(--green)" }) {
 
 function HazPick() {
   const [sel, setSel] = useStateField("Flood");
+  const [sev, setSev] = useStateField(3);
+  const [submitted, setSubmitted] = useStateField(false);
   const haz = [["Flood", "flood"], ["Fire", "fire"], ["Conflict", "conflict"], ["Epidemic", "health"], ["Collapse", "collapse"], ["Accident", "rta"]];
+
+  function submit() {
+    const icon = haz.find(([n]) => n === sel)?.[1] || "incidents";
+    SentinelStore.addIncident({ type: sel, icon, lga: "Igabi", ward: "Rigachikun", sev, channel: "Field App", desc: sel + " incident reported from field via mobile companion. GPS: 10.6731, 7.4012." });
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+  }
+
   return (
     <div className="ph-app">
       <div className="ph-head">
@@ -44,15 +54,17 @@ function HazPick() {
       </div>
       <div className="ph-field"><label>Severity</label>
         <div className="ph-sev">
-          <button className="phsev l1">L1</button>
-          <button className="phsev l2">L2</button>
-          <button className="phsev l3 on">L3</button>
+          {[1, 2, 3].map((s) => (
+            <button key={s} className={"phsev l" + s + (sev === s ? " on" : "")} onClick={() => setSev(s)}>L{s}</button>
+          ))}
         </div>
       </div>
       <div className="ph-field"><label>Add photo</label>
         <div className="ph-photo"><Icon name="eye" size={18} />Tap to capture evidence</div>
       </div>
-      <button className="ph-submit"><Icon name="up" size={16} />Submit report</button>
+      <button className="ph-submit" onClick={submit} style={submitted ? { background: "var(--green)", color: "#fff" } : {}}>
+        <Icon name={submitted ? "check" : "up"} size={16} />{submitted ? "Submitted!" : "Submit report"}
+      </button>
       <div className="ph-hint">Works offline · syncs when connected</div>
     </div>
   );
